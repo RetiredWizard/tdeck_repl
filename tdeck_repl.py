@@ -1,4 +1,4 @@
-from sys import stdin,stdout,implementation
+from sys import stdin
 
 import board
 from supervisor import runtime
@@ -24,9 +24,6 @@ class PyDOS_UI:
             "D": countio.Counter(board.TRACKBALL_LEFT)
         }
         self.click = keypad.Keys([board.TRACKBALL_CLICK], value_when_pressed=False)
-
-    def get_screensize(self):
-        return (19,52)
 
     def serial_bytes_available(self):
         if not self._touched:
