@@ -1,15 +1,15 @@
 from tdeck_repl import input
 
 while True:
-    cmd = input("=>> ")
-    result = None
+    __cmd = input("=>> ")
+    __result = None
     try:
-        exec('result='+cmd)
+        exec('__result='+__cmd)
     except:
         try:
-            exec(cmd)
+            exec(__cmd)
         except Exception as err:
             print("*ERROR* Exception:",str(err))
 
-    if result != None and cmd.find('=') == -1:
-        print(result)
+    if __result != None and __cmd.find('=') == -1:
+        print(__result)
