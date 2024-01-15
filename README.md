@@ -11,3 +11,5 @@ try:
     from tdeck_repl import input
 except:
     pass
+```
+The Virtual REPL will treat a file named virtcode.py in the root directory ('/') the way the native REPL treats a code.py file, that is it will be executed within the Virtual REPL when the Microcontroller is powered up or reset. When the virtcode.py program exits the Virtual REPL will take over control.
