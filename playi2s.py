@@ -1,3 +1,21 @@
+# 
+# Files that have been converted as follows have been tested
+# Other formats may work.....
+#
+
+"""Audio Format                          : PCM
+Format settings                          : Little / Signed
+Codec ID                                 : 1
+Duration                                 : 4 min 5 s
+Bit rate mode                            : Constant
+Bit rate                                 : 128 kb/s
+Channel(s)                               : 1 channel
+Sampling rate                            : 8 000 Hz
+Bit depth                                : 16 bits
+Stream size                              : 3.75 MiB (100%)
+"""
+
+
 import board
 try:
     import bitbangio
