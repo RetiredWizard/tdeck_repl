@@ -3,13 +3,13 @@ from sys import stdin
 import board
 from supervisor import runtime
 from adafruit_bus_device.i2c_device import I2CDevice
-import countio
 import keypad
 import time
 
 class PyDOS_UI:
 
     def __init__(self):
+        self.trackevent = None
         self.scrollable = False
         self.arrow = ""
         self._cmdhistlock = False
@@ -21,13 +21,16 @@ class PyDOS_UI:
         self.commandHistory = [""]
 
        	self._i2c = I2CDevice(board.I2C(), _ADDRESS_KBD)
-        self.trackball = {
-            "A": countio.Counter(board.TRACKBALL_UP),
-            "B": countio.Counter(board.TRACKBALL_DOWN),
-            "C": countio.Counter(board.TRACKBALL_RIGHT),
-            "D": countio.Counter(board.TRACKBALL_LEFT)
-        }
-        self.click = keypad.Keys([board.TRACKBALL_CLICK], value_when_pressed=False)
+        self.trackball = keypad.Keys(
+            [
+                board.TRACKBALL_CLICK,
+                board.TRACKBALL_UP,
+                board.TRACKBALL_DOWN,
+                board.TRACKBALL_LEFT,
+                board.TRACKBALL_RIGHT
+            ],
+            value_when_pressed=False
+        )
 
     def serial_bytes_available(self):
         if not self._touched:
@@ -35,26 +38,13 @@ class PyDOS_UI:
 
             # Find the last direction the trackball was moved
             #  and wait for trackball to stop moving
-            largestDir = 0
             self.arrow = ''
-            trackloop = True
-            while trackloop:
-                trackloop = False
-                for p,c in Pydos_ui.trackball.items():
-                    if c.count > largestDir:
-                        trackloop = True
-                        if p not in "AB" or not self._cmdhistlock:
-                            self.arrow = p
-                            largestDir = c.count
-                        c.reset()
-                    else:
-                        c.reset()
-                if self.arrow != "" and not trackloop:
-                    time.sleep(.05)
-                    # clear all counters
-                    for p,c in Pydos_ui.trackball.items():
-                        if c.count > 0:
-                            c.reset()
+            self.trackevent = Pydos_ui.trackball.events.get()
+            if self.trackevent and (self.trackevent.key_number not in [1,2] or not self._cmdhistlock):
+                self.arrow = ' ABDC'[self.trackevent.key_number]
+                if self.arrow == " ":
+                    self.arrow = ""
+                else:
                     retval = 1
                     self._touched = True
 
@@ -118,9 +108,9 @@ def input(disp_text=None):
     if disp_text != None:
         print(disp_text,end="")
 
-    bld_chr1 = '_(+'
-    bld_chr2 = '-+)'
-    bld_chr =  '=[]'
+    bld_chr1 = '_(+(-__-'
+    bld_chr2 = '-+)-)/#/'
+    bld_chr =  '=[]<>\^%'
     bld_started = False
 
     histPntr = len(Pydos_ui.commandHistory)

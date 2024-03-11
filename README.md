@@ -6,6 +6,16 @@ Placing code.py and tdeck_repl.py on the LilyGO [T-DECK](https://www.lilygo.cc/p
 To generate an equal sign (=) enter an underscore followed by a dash (_-) and to generate square brackets enter a parenthesis followed or proceeded by a plus sign ( [ = (+, ] = +) ).
 Pressing the speaker key (just left of the enter key) will generate the dollar sign ($).
 
+Multi-key translation table:  
+    _-   ->   =  
+    (+   ->   [  
+    +)   ->   ]  
+    (-   ->   <  
+    -)   ->   >  
+    _#   ->   ^  
+    _/   ->   \  
+    -/   ->   %  
+
 In order to enable T-Deck keyboard input in python scripts add the following block of code to the import section of your code:
 ```py
 try:
