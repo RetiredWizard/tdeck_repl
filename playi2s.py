@@ -45,64 +45,70 @@ import digitalio
 import storage
 import audiocore
 import audiobusio
-fname = input("Filename:")
-try:
-    if "SD_SPI" in dir(board):
-        spi = board.SD_SPI()
-    elif "SD_SCK" in dir(board):
-        spi = bitbangio.SPI(board.SD_SCK,board.SD_MOSI,board.SD_MISO)
-    elif "SPI" in dir(board):
-        spi = board.SPI()
-    else:
-        spi = bitbangio.SPI(board.SCK,board.MOSI,board.MISO)
 
-    if "SD_CS" in dir(board):
-        cs = digitalio.DigitalInOut(board.SD_CS)
-    elif "SDCARD_CS" in dir(board):
-        cs = digitalio.DigitalInOut(board.SDCARD_CS)
-    else:
-        cs = digitalio.DigitalInOut(board.CS)
-
+def Playi2s():
+    fname = input("Filename:")
     try:
-        sd = adafruit_sdcard.SDCard(spi,cs)
-    except:
-        cs.deinit()
-        if "SD_CS" in dir(board):
-            sd = adafruit_sdcard.SDCard(spi,board.SD_CS)
-        elif "SDCARD_CS" in dir(board):
-            sd = adafruit_sdcard.SDCard(spi,board.SDCARD_CS)
+        if "SD_SPI" in dir(board):
+            spi = board.SD_SPI()
+        elif "SD_SCK" in dir(board):
+            spi = bitbangio.SPI(board.SD_SCK,board.SD_MOSI,board.SD_MISO)
+        elif "SPI" in dir(board):
+            spi = board.SPI()
         else:
-            sd = adafruit_sdcard.SDCard(spi,board.CS)
+            spi = bitbangio.SPI(board.SCK,board.MOSI,board.MISO)
 
-    vfs = storage.VfsFat(sd)
-    storage.mount(vfs,'/sd')
-    print('SD card mounted on /sd')
-except:
-    pass
-f = open(fname, "rb")
-wav = audiocore.WaveFile(f)
-a = None
-if 'I2S_BIT_CLOCK' in dir(board):
-    a = audiobusio.I2SOut(board.I2S_BIT_CLOCK, board.I2S_WORD_SELECT, board.I2S_DATA)
-elif 'SPEAKER_SCK' in dir(board):
-    a = audiobusio.I2SOut(board.SPEAKER_SCK, board.SPEAKER_WS, board.SPEAKER_DOUT)
-else:
-    print('No I2S pins defined on the board')
+        if "SD_CS" in dir(board):
+            cs = digitalio.DigitalInOut(board.SD_CS)
+        elif "SDCARD_CS" in dir(board):
+            cs = digitalio.DigitalInOut(board.SDCARD_CS)
+        else:
+            cs = digitalio.DigitalInOut(board.CS)
 
-if a is not None:
-    print("Press Q to quit")
-    try:
-        a.play(wav)
-        while True:
-            if 'read_keyboard' in dir(Pydos_ui):
-                cmnd = Pydos_ui.read_keyboard(1)
+        try:
+            sd = adafruit_sdcard.SDCard(spi,cs)
+        except:
+            cs.deinit()
+            if "SD_CS" in dir(board):
+                sd = adafruit_sdcard.SDCard(spi,board.SD_CS)
+            elif "SDCARD_CS" in dir(board):
+                sd = adafruit_sdcard.SDCard(spi,board.SDCARD_CS)
             else:
-                cmnd = Pydos_ui.read(1)
-            if cmnd in "qQ":
-                a.stop()
-                break
+                sd = adafruit_sdcard.SDCard(spi,board.CS)
+
+        vfs = storage.VfsFat(sd)
+        storage.mount(vfs,'/sd')
+        print('SD card mounted on /sd')
     except:
         pass
-        
-    a.deinit()
-f.close()
+    f = open(fname, "rb")
+    wav = audiocore.WaveFile(f)
+    a = None
+    if 'I2S_BIT_CLOCK' in dir(board):
+        a = audiobusio.I2SOut(board.I2S_BIT_CLOCK, board.I2S_WORD_SELECT, board.I2S_DATA)
+    elif 'SPEAKER_SCK' in dir(board):
+        a = audiobusio.I2SOut(board.SPEAKER_SCK, board.SPEAKER_WS, board.SPEAKER_DOUT)
+    else:
+        print('No I2S pins defined on the board')
+
+    if a is not None:
+        print("Press Q to quit")
+        try:
+            a.play(wav)
+            while True:
+                if 'read_keyboard' in dir(Pydos_ui):
+                    cmnd = Pydos_ui.read_keyboard(1)
+                else:
+                    cmnd = Pydos_ui.read(1)
+                if cmnd in "qQ":
+                    a.stop()
+                    break
+        except:
+            pass
+            
+        a.deinit()
+    f.close()
+
+Playi2s()
+if __name__ != "PyDOS":
+    print("Enter 'playi2s.Playi2s()' in the REPL ro re-run.")
