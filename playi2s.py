@@ -30,9 +30,14 @@ except:
         pass
 try:
     from pydos_ui import Pydos_ui
+    try:
+        from pydos_ui import input
+    except:
+        pass
 except:
     try:
         from tdeck_repl import Pydos_ui
+        from tdeck_repl import input
     except:
         from sys import stdin as Pydos_ui
 
@@ -76,6 +81,7 @@ except:
     pass
 f = open(fname, "rb")
 wav = audiocore.WaveFile(f)
+a = None
 if 'I2S_BIT_CLOCK' in dir(board):
     a = audiobusio.I2SOut(board.I2S_BIT_CLOCK, board.I2S_WORD_SELECT, board.I2S_DATA)
 elif 'SPEAKER_SCK' in dir(board):
@@ -83,18 +89,20 @@ elif 'SPEAKER_SCK' in dir(board):
 else:
     print('No I2S pins defined on the board')
 
-print("Press Q to quit")
-try:
-    a.play(wav)
-    while True:
-        if 'read_keyboard' in dir(Pydos_ui):
-            cmnd = Pydos_ui.read_keyboard(1)
-        else:
-            cmnd = Pydos_ui.read(1)
-        if cmnd in "qQ":
-            a.stop()
-            break
-except:
-    pass
+if a is not None:
+    print("Press Q to quit")
+    try:
+        a.play(wav)
+        while True:
+            if 'read_keyboard' in dir(Pydos_ui):
+                cmnd = Pydos_ui.read_keyboard(1)
+            else:
+                cmnd = Pydos_ui.read(1)
+            if cmnd in "qQ":
+                a.stop()
+                break
+    except:
+        pass
+        
+    a.deinit()
 f.close()
-a.deinit()
