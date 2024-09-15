@@ -9,6 +9,7 @@ def show():
     print("              _#               ^")
     print("              _/               \\")
     print("              -/               %")
+    print("              _!               &")
     print(" Speaker Key (left of enter)   $")
     print(" Track ball up                 up arrow")
     print(" Track ball down               down arrow")

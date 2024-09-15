@@ -15,6 +15,7 @@ Multi-key translation table:
     _#   ->   ^  
     _/   ->   \  
     -/   ->   %  
+*To display the key translation table on the T-Deck, type "import keys" from the REPL prompt.*  
 
 In order to enable T-Deck keyboard input in python scripts add the following block of code to the import section of your code:
 ```py
